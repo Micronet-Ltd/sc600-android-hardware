@@ -48,7 +48,8 @@
 
 #define __CLASS__ "HWCSession"
 
-#define HWC_UEVENT_SWITCH_HDMI "change@/devices/virtual/switch/hdmi"
+//#define HWC_UEVENT_SWITCH_HDMI "change@/devices/virtual/switch/hdmi"
+#define HWC_UEVENT_SWITCH_HDMI "change@/devices/platform/soc/soc:qcom,mdss_dsi@0/1a96000.qcom,mdss_dsi_ctrl1/extcon/extcon1"
 #define HWC_UEVENT_GRAPHICS_FB0 "change@/devices/virtual/graphics/fb0"
 
 static sdm::HWCSession::HWCModuleMethods g_hwc_module_methods;
@@ -1492,7 +1493,7 @@ android::status_t HWCSession::QdcmCMDHandler(const android::Parcel *input_parcel
 void HWCSession::UEventHandler(const char *uevent_data, int length) {
   if (!strcasecmp(uevent_data, HWC_UEVENT_SWITCH_HDMI)) {
     DLOGI("Uevent HDMI = %s", uevent_data);
-    int connected = GetEventValue(uevent_data, length, "SWITCH_STATE=");
+    int connected = GetEventValue(uevent_data, length, "STATE=HDMI=");
     if (connected >= 0) {
       DLOGI("HDMI = %s", connected ? "connected" : "disconnected");
       if (HotPlugHandler(connected) == -1) {

@@ -25,6 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <cutils/properties.h>
 
 #include <log/log.h>
 
@@ -44,13 +45,41 @@ static bool device_exists(const char *file) {
     return true;
 }
 
+static bool pmi632_exists() {
+    char value[PROPERTY_VALUE_MAX];
+
+    property_get("ro.boot.pmi632_exist", value, NULL);
+
+    ALOGI("pmi632_exists ro.boot.pmi632_exist=[%s] ",value);
+
+    if(!strcmp(value,"true"))
+    {
+        return true;
+    }
+    else
+    {
+       return false;
+    }
+}
+
 static bool vibra_exists() {
+    if(!(pmi632_exists()))
+    {
+        ALOGI("PMI632 not exist,so force to set  vibrator as exists !!");
+        return true;
+    }
     return device_exists(THE_DEVICE);
 }
 
 static int write_value(const char *file, const char *value)
 {
     int to_write, written, ret, fd;
+
+    if(!(pmi632_exists()))
+    {
+        ALOGI("PMI632 not exist,so force to set  vibrator as exists !!");
+        return 0;
+    }
 
     fd = TEMP_FAILURE_RETRY(open(file, O_WRONLY));
     if (fd < 0) {

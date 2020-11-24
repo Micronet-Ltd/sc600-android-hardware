@@ -408,7 +408,8 @@ void setup_wcnss_parameters(int *cal)
 	}
 
 	rc = property_get("ro.serialno", serial, "");
-	if (rc) {
+//wifi mac read from NV4678,barret
+	if (0) {
 		serial_num = convert_string_to_hex(serial);
 		ALOGE("Serial Number is  %x", serial_num);
 

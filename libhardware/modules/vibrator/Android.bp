@@ -22,5 +22,5 @@ cc_library_shared {
     header_libs: ["libhardware_headers"],
     srcs: ["vibrator.c"],
     cflags: ["-Wall", "-Werror"],
-    shared_libs: ["liblog"],
+    shared_libs: ["liblog","libcutils","libc"],
 }
