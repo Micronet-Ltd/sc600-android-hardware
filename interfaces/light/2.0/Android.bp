@@ -21,5 +21,6 @@ hidl_interface {
         "Type",
     ],
     gen_java: true,
+    gen_java_constants: true,
 }
 
