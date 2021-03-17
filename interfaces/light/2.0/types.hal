@@ -23,6 +23,7 @@ enum Status : int32_t {
     UNKNOWN,
 };
 
+@export
 enum Flash : int32_t {
     /**
      * Keep the light steady on or off.
@@ -40,6 +41,7 @@ enum Flash : int32_t {
     HARDWARE,
 };
 
+@export
 enum Brightness : int32_t {
     /**
      * Light brightness is managed by a user setting.
@@ -83,6 +85,7 @@ enum Brightness : int32_t {
  * BUTTONS, it might make sense to also light the INDICATOR
  * light to a reasonable color when the BUTTONS are lit.
  */
+@export
 enum Type : int32_t {
     BACKLIGHT,
     KEYBOARD,
