@@ -17080,7 +17080,6 @@ bool QCameraParameters::isNoDisplayMode(uint32_t cam_type)
  *==========================================================================*/
 int32_t QCameraParameters::setAfFineTune(const char *FineTuneStr)
 {
-	return NO_ERROR;
     if (FineTuneStr != NULL) {
         int32_t value = lookupAttr(ENABLE_DISABLE_MODES_MAP,
                 PARAM_MAP_SIZE(ENABLE_DISABLE_MODES_MAP), FineTuneStr);
