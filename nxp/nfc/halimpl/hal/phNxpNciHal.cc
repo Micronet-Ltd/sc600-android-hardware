@@ -1370,7 +1370,10 @@ int phNxpNciHal_core_initialized(uint8_t* p_core_init_rsp_params) {
     }
   }
 
-  if (isNxpConfigModified() || (fw_download_success == 1)) {
+  if(isNxpConfigModified() || (fw_download_success == 1) || (anti_tearing_recovery_success == 1)) {
+    NXPLOG_NCIHAL_D("Applying Settings: isNxpConfigModified()=%d, fw_download_success=%d, anti_tearing_recovery_success=%d", isNxpConfigModified(), fw_download_success, anti_tearing_recovery_success);
+
+  //if (isNxpConfigModified() || (fw_download_success == 1)) {
     retlen = 0;
     fw_download_success = 0;
 
@@ -1638,12 +1641,15 @@ int phNxpNciHal_core_initialized(uint8_t* p_core_init_rsp_params) {
     if (status != NFCSTATUS_SUCCESS) {
       NXPLOG_NCIHAL_E("NXP Update MW EEPROM Proprietary Ext failed");
     }
+    anti_tearing_recovery_success = 0;  
   }
-
+  
   retlen = 0;
-
+  NXPLOG_NCIHAL_D("Performing NAME_NXP_CORE_CONF Settings");
   isfound =
       GetNxpByteArrayValue(NAME_NXP_CORE_CONF, (char*)buffer, bufflen, &retlen);
+
+  NXPLOG_NCIHAL_D("NAME_NXP_CORE_CONF Settings Found - %d Len: %ld", isfound, retlen);
   if (retlen > 0) {
     /* NXP ACT Proprietary Ext */
     status = phNxpNciHal_send_ext_cmd(retlen, buffer);
