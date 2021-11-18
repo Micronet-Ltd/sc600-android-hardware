@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  ******************************************************************************/
-#define LOG_TAG "NxpHal"
+#define LOG_TAG "NxpHal1"
 #include "NxpNfcCapability.h"
 #include <phNxpLog.h>
 
