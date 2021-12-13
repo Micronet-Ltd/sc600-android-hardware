@@ -74,7 +74,7 @@ static uint8_t gRecFwRetryCount;  // variable to hold dummy FW recovery count
 static uint8_t Rx_data[NCI_MAX_DATA_LEN];
 extern int phPalEse_spi_ioctl(phPalEse_ControlCode_t eControlCode,void *pDevHandle, long level);
 uint32_t timeoutTimerId = 0;
-bool nfc_debug_enabled = true;
+bool nfc_debug_enabled = 0;
 
 phNxpNciHal_Sem_t config_data;
 
@@ -143,6 +143,7 @@ static void phNxpNciHal_initialize_debug_enabled_flag() {
     sscanf(valueStr, "%u", &debug_enabled);
     nfc_debug_enabled = (debug_enabled == 0) ? false : true;
   }
+  nfc_debug_enabled = 0;
   NXPLOG_NCIHAL_D("nfc_debug_enabled : %d",nfc_debug_enabled);
 
 }
