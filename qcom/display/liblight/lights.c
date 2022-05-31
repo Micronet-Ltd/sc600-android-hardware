@@ -50,12 +50,24 @@ static int g_attention = 0;
 
 char const*const RED_LED_FILE
         = "/sys/class/leds/red/brightness";
+char const*const RED_LED_FILE_1
+        = "/sys/class/leds/red-1/brightness";
+char const*const RED_LED_FILE_2
+        = "/sys/class/leds/red-2/brightness";
 
 char const*const GREEN_LED_FILE
         = "/sys/class/leds/green/brightness";
+char const*const GREEN_LED_FILE_1
+        = "/sys/class/leds/green-1/brightness";
+char const*const GREEN_LED_FILE_2
+        = "/sys/class/leds/green-2/brightness";
 
 char const*const BLUE_LED_FILE
         = "/sys/class/leds/blue/brightness";
+char const*const BLUE_LED_FILE_1
+        = "/sys/class/leds/blue-1/brightness";
+char const*const BLUE_LED_FILE_2
+        = "/sys/class/leds/blue-2/brightness";
 
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
@@ -178,7 +190,7 @@ static int
 set_speaker_light_locked(struct light_device_t* dev,
         struct light_state_t const* state, unsigned led_mask)
 {
-    int red, green, blue;
+    int red, green, blue, alfa;
     int blink;
     int onMS, offMS;
     unsigned int colorRGB;
@@ -206,6 +218,7 @@ set_speaker_light_locked(struct light_device_t* dev,
             state->flashMode, colorRGB, onMS, offMS);
 #endif
 
+    alfa = (colorRGB >> 24) & 0xFF;
     red = (colorRGB >> 16) & 0xFF;
     green = (colorRGB >> 8) & 0xFF;
     blue = colorRGB & 0xFF;
@@ -242,11 +255,45 @@ set_speaker_light_locked(struct light_device_t* dev,
         if (led_mask & 4) {
             write_int(RED_LED_FILE, red);
         }
-        if (led_mask & 2) {
-            write_int(GREEN_LED_FILE, green);
-        }
-        if (led_mask & 1) {
-            write_int(BLUE_LED_FILE, blue);
+        if (alfa) {
+            if (led_mask & 2) {
+                write_int(GREEN_LED_FILE, (green & 1));
+            }
+            if (led_mask & 1) {
+                write_int(BLUE_LED_FILE, (blue & 1));
+            }
+
+            red >>= 1;
+            green >>= 1;
+            blue >>= 1;
+            if (led_mask & 0x40) {
+                write_int(RED_LED_FILE_1, (red & 1));
+            }
+            if (led_mask & 0x20) {
+                write_int(GREEN_LED_FILE_1, (green & 1));
+            }
+            if (led_mask & 0x10) {
+                write_int(BLUE_LED_FILE_1, (blue & 1));
+            }
+            red >>= 1;
+            green >>= 1;
+            blue >>= 1;
+            if (led_mask & 0x400) {
+                write_int(RED_LED_FILE_2, (red & 1));
+            }
+            if (led_mask & 0x200) {
+                write_int(GREEN_LED_FILE, (green & 1));
+            }
+            if (led_mask & 0x100) {
+                write_int(BLUE_LED_FILE, (blue & 1));
+            }
+        } else {
+            if (led_mask & 2) {
+                write_int(GREEN_LED_FILE, green);
+            }
+            if (led_mask & 1) {
+                write_int(BLUE_LED_FILE, blue);
+            }
         }
     }
 
@@ -263,7 +310,7 @@ handle_speaker_battery_locked(struct light_device_t* dev)
         led_mask |= 4;
         set_speaker_light_locked(dev, &g_battery, led_mask);
     } else {
-        led_mask |= 3;
+        led_mask |= 0x0773;
         set_speaker_light_locked(dev, &g_notification, led_mask);
     }
 #if 0
@@ -292,9 +339,15 @@ static int
 set_light_notifications(struct light_device_t* dev,
         struct light_state_t const* state)
 {
+    int alfa;
     pthread_mutex_lock(&g_lock);
     g_notification = *state;
-    g_notification.color &= 0x00FFFF;
+    alfa = (g_notification.color >> 24) & 0xFF;
+    if (alfa & ~0x30) {
+        g_notification.color &= 0x00FFFF; 
+    } else {
+        g_notification.color &= 0x3003FFFF; 
+    }
     handle_speaker_battery_locked(dev);
     pthread_mutex_unlock(&g_lock);
     return 0;
@@ -347,7 +400,11 @@ set_light_keyboard(struct light_device_t* dev,
     if (property_get("hw.build.version.mcu", portable, 0) <= 0 || !isalnum(portable[2])) {
         ver = 4;
     } else {
-        ver = portable[2] - 0x30;
+        if ('A' == portable[0]) {
+            ver = portable[2] - 0x30; 
+        } else {
+            ver = portable[0] - 0x30;
+        }
     }
 
     if (property_get("persist.vendor.board.config", portable, 0) <= 0 ) {
