@@ -95,7 +95,8 @@ struct Nfc : public V1_1::INfc, public hidl_death_recipient {
   }
 
   virtual void serviceDied(uint64_t /*cookie*/, const wp<IBase>& /*who*/) {
-    close();
+    //close();
+    abort();
   }
 
  private:
