@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 NXP Semiconductors
+ * Copyright (C) 2012-2014,2020 NXP Semiconductors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,8 @@ static uint8_t cmd_icode_eof[] = {0x00, 0x00, 0x00};
 
 /* FW download success flag */
 static uint8_t fw_download_success = 0;
+/* Anti-tearing mechanism sucess flag */
+uint8_t anti_tearing_recovery_success = 0;
 
 static uint8_t config_access = false;
 static uint8_t config_success = true;
@@ -965,7 +967,7 @@ int phNxpNciHal_write_unlocked(uint16_t data_len, const uint8_t* p_data) {
   /* check for write synchronyztion */
   if(phNxpNciHal_check_ncicmd_write_window(nxpncihal_ctrl.cmd_len,
                          nxpncihal_ctrl.p_cmd_data) != NFCSTATUS_SUCCESS) {
-    NXPLOG_NCIHAL_D("phNxpNciHal_write_unlocked Create cb data failed");
+    NXPLOG_NCIHAL_D("phNxpNciHal_write_unlocked check nci write window failed");
     data_len = 0;
     goto clean_and_return;
   }
@@ -1374,7 +1376,6 @@ int phNxpNciHal_core_initialized(uint8_t* p_core_init_rsp_params) {
   if(isNxpConfigModified() || (fw_download_success == 1) || (anti_tearing_recovery_success == 1)) {
     NXPLOG_NCIHAL_D("Applying Settings: isNxpConfigModified()=%d, fw_download_success=%d, anti_tearing_recovery_success=%d", isNxpConfigModified(), fw_download_success, anti_tearing_recovery_success);
 
-  //if (isNxpConfigModified() || (fw_download_success == 1)) {
     retlen = 0;
     fw_download_success = 0;
 
