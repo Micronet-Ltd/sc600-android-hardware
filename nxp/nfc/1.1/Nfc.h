@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- *  Copyright 2018 NXP
+ *  Copyright 2018,2020 NXP
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ struct Nfc : public V1_1::INfc, public hidl_death_recipient {
   }
 
   virtual void serviceDied(uint64_t /*cookie*/, const wp<IBase>& /*who*/) {
-    close();
+    abort();
   }
 
  private:

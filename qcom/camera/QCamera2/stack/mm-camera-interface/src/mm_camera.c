@@ -2547,10 +2547,10 @@ static const char *cam_log_filename    = QCAMERA_DUMP_FRM_LOCATION"cam_dbg_log_h
 /* current trace loggin permissions
    * {NONE, ERR, WARN, HIGH, DEBUG, LOW, INFO} */
 int g_cam_log[CAM_LAST_MODULE][CAM_GLBL_DBG_INFO + 1] = {
-    {0, 1, 0, 0, 0, 0, 1}, /* CAM_NO_MODULE     */
-    {0, 1, 0, 0, 0, 0, 1}, /* CAM_HAL_MODULE    */
-    {0, 1, 0, 0, 0, 0, 1}, /* CAM_MCI_MODULE    */
-    {0, 1, 0, 0, 0, 0, 1}, /* CAM_JPEG_MODULE   */
+    {0, 1, 1, 0, 0, 0, 0}, /* CAM_NO_MODULE     */
+    {0, 1, 1, 0, 0, 0, 0}, /* CAM_HAL_MODULE    */
+    {0, 1, 1, 0, 0, 0, 0}, /* CAM_MCI_MODULE    */
+    {0, 1, 1, 0, 0, 0, 0}, /* CAM_JPEG_MODULE   */
 };
 
 /* string representation for logging level */
