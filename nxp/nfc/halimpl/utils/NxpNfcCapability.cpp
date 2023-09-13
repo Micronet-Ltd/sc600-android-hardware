@@ -1,6 +1,6 @@
 /******************************************************************************
  *
- *  Copyright (C) 2015 NXP Semiconductors
+ *  Copyright (C) 2015,2020 NXP Semiconductors
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
  *  limitations under the License.
  *
  ******************************************************************************/
-#define LOG_TAG "NxpHal1"
+#define LOG_TAG "NxpHal"
 #include "NxpNfcCapability.h"
 #include <phNxpLog.h>
 
@@ -89,6 +89,7 @@ tNFC_chipType capability::getChipType(uint8_t* msg, uint16_t msg_len) {
 
         case 0x28:
         case 0x48:  // NQ210
+        case 0x88:
           chipType = pn548C2;
           break;
 

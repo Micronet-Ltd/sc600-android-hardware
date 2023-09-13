@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 NXP Semiconductors
+ * Copyright (C) 2012-2014,2020 NXP Semiconductors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@
 /******************* Global variables *****************************************/
 extern phNxpNciHal_Control_t nxpncihal_ctrl;
 extern phNxpNciProfile_Control_t nxpprofile_ctrl;
+extern uint8_t anti_tearing_recovery_success;
 extern uint32_t cleanup_timer;
 extern bool nfc_debug_enabled;
 uint8_t icode_detected = 0x00;
@@ -355,7 +356,12 @@ NFCSTATUS phNxpNciHal_process_ext_rsp(uint8_t* p_ntf, uint16_t* p_len) {
       *p_len = 5;
     }
   }
-
+  else if(p_ntf[0] == 0x60 && p_ntf[1] == 0x07 && p_ntf[3] == 0xE6)
+  {
+      NXPLOG_NCIHAL_E("CORE_GENERIC_ERROR_NTF received!");
+      /* register recovery success to force applying RF settings */
+      anti_tearing_recovery_success = 1;
+  }
 
   if (*p_len == 4 && p_ntf[0] == 0x61 && p_ntf[1] == 0x07 ) {
     unsigned long rf_update_enable = 0;
@@ -863,6 +869,29 @@ NFCSTATUS phNxpNciHal_write_ext(uint16_t* cmd_len, uint8_t* p_cmd_data,
     }
   }
 
+  if ((nfcFL.chipType == pn548C2) &&
+          (p_cmd_data[0] == 0x20 && p_cmd_data[1] == 0x02)) {
+      uint8_t temp;
+      uint8_t* p = p_cmd_data + 4;
+      uint8_t* end = p_cmd_data + *cmd_len;
+      while (p < end) {
+          if (*p == 0x53)  // LF_T3T_FLAGS
+          {
+              NXPLOG_NCIHAL_D("> Going through workaround - LF_T3T_FLAGS swap");
+              temp = *(p + 3);
+              *(p + 3) = *(p + 2);
+              *(p + 2) = temp;
+              NXPLOG_NCIHAL_D("> Going through workaround - LF_T3T_FLAGS - End");
+              status = NFCSTATUS_SUCCESS;
+              break;
+          }
+          if (*p == 0xA0) {
+              p += *(p + 2) + 3;
+          } else {
+              p += *(p + 1) + 2;
+          }
+      }
+  }
 
   return status;
 }

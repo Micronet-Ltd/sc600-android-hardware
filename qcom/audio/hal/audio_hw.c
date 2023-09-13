@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2020, The Linux Foundation. All rights reserved.
  * Not a Contribution.
  *
  * Copyright (C) 2013 The Android Open Source Project
@@ -2112,6 +2112,9 @@ int select_devices(struct audio_device *adev, audio_usecase_t uc_id)
         return -EINVAL;
     }
 
+    ALOGD("%s: capture device (%d, %d, %s: [%d, %d])", __func__, usecase->id, usecase->in_snd_device,
+          platform_get_snd_device_name(usecase->in_snd_device), usecase->type, usecase->stream.in->source);
+
     if ((usecase->type == VOICE_CALL) ||
         (usecase->type == VOIP_CALL)  ||
         (usecase->type == PCM_HFP_CALL)) {
@@ -2215,6 +2218,7 @@ int select_devices(struct audio_device *adev, audio_usecase_t uc_id)
             }
             usecase->devices = usecase->stream.in->device;
             out_snd_device = SND_DEVICE_NONE;
+            ALOGD("%s: capture device (%d: %s)", __func__, in_snd_device,  platform_get_snd_device_name(in_snd_device));
             if (in_snd_device == SND_DEVICE_NONE) {
                 audio_devices_t out_device = AUDIO_DEVICE_NONE;
                 if (adev->active_input &&
