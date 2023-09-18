@@ -282,10 +282,10 @@ set_speaker_light_locked(struct light_device_t* dev,
                 write_int(RED_LED_FILE_2, (red & 1));
             }
             if (led_mask & 0x200) {
-                write_int(GREEN_LED_FILE, (green & 1));
+                write_int(GREEN_LED_FILE_2, (green & 1));
             }
             if (led_mask & 0x100) {
-                write_int(BLUE_LED_FILE, (blue & 1));
+                write_int(BLUE_LED_FILE_2, (blue & 1));
             }
         } else {
             if (led_mask & 2) {
