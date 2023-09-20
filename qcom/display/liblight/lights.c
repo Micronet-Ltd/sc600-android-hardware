@@ -282,10 +282,10 @@ set_speaker_light_locked(struct light_device_t* dev,
                 write_int(RED_LED_FILE_2, (red & 1));
             }
             if (led_mask & 0x200) {
-                write_int(GREEN_LED_FILE, (green & 1));
+                write_int(GREEN_LED_FILE_2, (green & 1));
             }
             if (led_mask & 0x100) {
-                write_int(BLUE_LED_FILE, (blue & 1));
+                write_int(BLUE_LED_FILE_2, (blue & 1));
             }
         } else {
             if (led_mask & 2) {
@@ -346,7 +346,7 @@ set_light_notifications(struct light_device_t* dev,
     if (alfa & ~0x30) {
         g_notification.color &= 0x00FFFF; 
     } else {
-        g_notification.color &= 0x3003FFFF; 
+        g_notification.color &= 0x3007FFFF; 
     }
     handle_speaker_battery_locked(dev);
     pthread_mutex_unlock(&g_lock);
