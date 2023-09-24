@@ -346,7 +346,7 @@ set_light_notifications(struct light_device_t* dev,
     if (alfa & ~0x30) {
         g_notification.color &= 0x00FFFF; 
     } else {
-        g_notification.color &= 0x3003FFFF; 
+        g_notification.color &= 0x3007FFFF; 
     }
     handle_speaker_battery_locked(dev);
     pthread_mutex_unlock(&g_lock);
